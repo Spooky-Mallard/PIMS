@@ -1,0 +1,23 @@
+# Environments
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+env/
+.venv/
+
+# Node / React
+node_modules/
+dist/
+build/
+.npm/
+
+# OS Files
+.DS_Store
+Thumbs.db
