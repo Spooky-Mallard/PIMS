@@ -1,3 +1,5 @@
+-- Requires: 01_foundational_tables.sql, 02_inventory_purchasing_tables.sql
+
 CREATE TABLE Sale (
     SaleID SERIAL PRIMARY KEY,
     CashierUserID INT REFERENCES "User"(UserID),
@@ -19,14 +21,14 @@ CREATE TABLE SaleItem (
     LineTotal DECIMAL(10, 2) NOT NULL
 );
 
-CREATE TABLE SaleItem (
-    SaleItemID SERIAL PRIMARY KEY,
-    SaleID INT REFERENCES Sale(SaleID),
-    BatchID INT REFERENCES StockBatch(BatchID),
-    Quantity INT NOT NULL,
-    UnitPrice DECIMAL(10, 2) NOT NULL,
-    LineTotal DECIMAL(10, 2) NOT NULL
+CREATE TABLE DispensingRegister (
+    RegisterID SERIAL PRIMARY KEY,
+    SaleItemID INT UNIQUE REFERENCES SaleItem(SaleItemID),
+    DispensedByUserID INT REFERENCES "User"(UserID),
+    DateDispensed TIMESTAMP NOT NULL,
+    PrescriptionRef VARCHAR(100)
 );
+
 
 INSERT INTO Sale (CashierUserID, ReceiptNumber, CustomerName, SaleDate, SubTotal, VATAmount, TotalAmount, PaymentType) VALUES 
 (1, 'RCPT-1001', 'Walk-in', '2025-10-05 10:30:00', 5000.00, 900.00, 5900.00, 'Cash'),
@@ -52,7 +54,7 @@ INSERT INTO Sale (CashierUserID, ReceiptNumber, CustomerName, SaleDate, SubTotal
 
 INSERT INTO SaleItem (SaleID, BatchID, Quantity, UnitPrice, LineTotal) VALUES 
 (1, 1, 10, 500.00, 5000.00),
-(2, 2, 10, 1200.00, 12000.00);
+(2, 2, 10, 1200.00, 12000.00),
 (3, 1, 5, 600.00, 3000.00),
 (4, 2, 10, 750.00, 7500.00),
 (5, 1, 15, 1000.00, 15000.00),
