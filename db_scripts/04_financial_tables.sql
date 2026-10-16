@@ -5,8 +5,7 @@ CREATE TABLE Expense (
     Description TEXT,
     Amount DECIMAL(12, 2) NOT NULL,
     ExpenseDate DATE NOT NULL
-);  
-
+);
 
 CREATE TABLE Payroll (
     PayrollID SERIAL PRIMARY KEY,
