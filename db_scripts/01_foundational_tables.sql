@@ -1,10 +1,6 @@
--- Ensure database exists and select it
-CREATE DATABASE IF NOT EXISTS pims_db;
-USE pims_db;
-
 -- 1. USER TABLE
-CREATE TABLE IF NOT EXISTS `User` (
-    UserID INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS "User" (
+    UserID SERIAL PRIMARY KEY,
     FullName VARCHAR(100) NOT NULL,
     Username VARCHAR(50) UNIQUE NOT NULL,
     PasswordHash VARCHAR(255) NOT NULL,
@@ -15,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `User` (
 
 -- 2. SUPPLIER TABLE
 CREATE TABLE IF NOT EXISTS Supplier (
-    SupplierID INT AUTO_INCREMENT PRIMARY KEY,
+    SupplierID SERIAL PRIMARY KEY,
     CompanyName VARCHAR(120) NOT NULL,
     ContactPerson VARCHAR(100),
     Phone VARCHAR(20),
@@ -25,7 +21,7 @@ CREATE TABLE IF NOT EXISTS Supplier (
 
 -- 3. DRUG TABLE
 CREATE TABLE IF NOT EXISTS Drug (
-    DrugID INT AUTO_INCREMENT PRIMARY KEY,
+    DrugID SERIAL PRIMARY KEY,
     DrugName VARCHAR(150) NOT NULL,
     Category VARCHAR(60),
     Manufacturer VARCHAR(100),
@@ -39,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Drug (
 -- ========================================================
 
 -- Insert 20 Users
-INSERT INTO `User` (FullName, Username, PasswordHash, Role, Phone, Status) VALUES 
+INSERT INTO "User" (FullName, Username, PasswordHash, Role, Phone, Status) VALUES 
 ('Sabano Zubedah', 'sabanoz', 'hashed123', 'Pharmacist', '+256700000001', 'Active'),
 ('Mumbere Matthew', 'mumberem', 'hashed123', 'Dispenser', '+256700000002', 'Active'),
 ('Alex Okello', 'alexo', 'hashed123', 'Director', '+256700000003', 'Active'),
