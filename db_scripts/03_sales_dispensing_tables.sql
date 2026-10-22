@@ -76,7 +76,7 @@ INSERT INTO SaleItem (SaleID, BatchID, Quantity, UnitPrice, LineTotal) VALUES
 
 INSERT INTO DispensingRegister (SaleItemID, DispensedByUserID, DateDispensed, PrescriptionRef) VALUES 
 (1, 1, '2025-10-05 10:35:00', NULL),
-(2, 2, '2025-10-06 14:20:00', 'RX-2025-998');
+(2, 2, '2025-10-06 14:20:00', 'RX-2025-998'),
 (3, 1, '2025-10-07 09:15:00', NULL),
 (4, 2, '2025-10-08 11:30:00', 'RX-2025-1004'),
 (5, 1, '2025-10-09 14:05:00', NULL),
