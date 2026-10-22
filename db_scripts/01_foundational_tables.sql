@@ -101,4 +101,9 @@ INSERT INTO Drug (DrugName, Category, Manufacturer, NDARegNo, UnitPrice, Reorder
 ('Oral Rehydration Salts', 'Electrolyte', 'Laborex', 'NDA/117', 800.00, 200),
 ('Diclofenac Gel 1%', 'Analgesic', 'Novartis', 'NDA/118', 6500.00, 25),
 ('Erythromycin 250mg', 'Antibiotic', 'Sun Pharma', 'NDA/119', 1600.00, 50),
-('Vitamin C 500mg', 'Supplement', 'Abacus', 'NDA/120', 300.00, 300);
+('Vitamin C 500mg', 'Supplement', 'Abacus', 'NDA/120', 300.00, 300),
+('Ceftriaxone 1g Injection', 'Antibiotic', 'Cipla', 'NDA/121', 15000.00, 40),
+('Human Insulin 100IU/ml', 'Antidiabetic', 'Novo Nordisk', 'NDA/122', 28000.00, 20),
+('Co-trimoxazole 480mg', 'Antibiotic', 'Universal', 'NDA/123', 1200.00, 80),
+('Amoxiclav 625mg', 'Antibiotic', 'GSK', 'NDA/124', 8500.00, 60),
+('Multivitamin Infusion 500ml', 'Supplement', 'Laborex', 'NDA/125', 22000.00, 30);

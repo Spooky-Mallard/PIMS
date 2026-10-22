@@ -108,26 +108,47 @@ def render_schema_viewer():
     st.title("🗄️ Database Architecture & Data Dictionary")
     st.markdown("Comprehensive relational model design for **Sekarungi Pharmaceuticals Ltd (PIMS)**.")
 
+    col_header, col_theme = st.columns([3, 2])
+    with col_header:
+        st.caption("Inspect the conceptual and physical database schema architecture.")
+    with col_theme:
+        canvas_theme = st.radio(
+            "Canvas Theme:",
+            ["🌙 Dark Slate (Matches UI)", "☀️ Clean Light Canvas"],
+            horizontal=True,
+            index=0,
+            key="canvas_theme_choice"
+        )
+
+    is_dark = (canvas_theme == "🌙 Dark Slate (Matches UI)")
+    bg_color = "#0f172a" if is_dark else "#ffffff"
+    border_color = "#334155" if is_dark else "#e2e8f0"
+
     tab_erd, tab_dict, tab_uml = st.tabs(["🖼️ Entity-Relationship Diagram (ERD)", "📖 Data Dictionary", "📐 UML Class Diagram"])
 
     with tab_erd:
         st.subheader("PIMS Entity-Relationship Diagram (Crow's Foot Notation)")
         st.caption("Visualizing strong and weak entities, 1:M relationships, and associative resolving tables.")
-        erd_svg_path = os.path.join(ASSETS_DIR, "pims_erd.svg")
+        
+        erd_filename = "pims_erd_dark.svg" if is_dark else "pims_erd.svg"
+        erd_svg_path = os.path.join(ASSETS_DIR, erd_filename)
+        if not os.path.exists(erd_svg_path):
+            erd_svg_path = os.path.join(ASSETS_DIR, "pims_erd.svg")
+
         if os.path.exists(erd_svg_path):
             with open(erd_svg_path, "r", encoding="utf-8") as f:
                 svg_content = f.read()
             st.markdown(
-                f'<div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; overflow-x: auto;">'
+                f'<div style="background-color: {bg_color}; padding: 20px; border-radius: 8px; border: 1px solid {border_color}; overflow-x: auto;">'
                 f'{svg_content}'
                 f'</div>',
                 unsafe_allow_html=True
             )
             with open(erd_svg_path, "rb") as file:
                 st.download_button(
-                    label="⬇️ Download Full ERD (SVG)",
+                    label=f"⬇️ Download Full ERD ({'Dark' if is_dark else 'Light'} SVG)",
                     data=file,
-                    file_name="PIMS-ERD.svg",
+                    file_name=f"PIMS-ERD-{'dark' if is_dark else 'light'}.svg",
                     mime="image/svg+xml"
                 )
         else:
@@ -166,8 +187,32 @@ def render_schema_viewer():
 
     with tab_uml:
         st.subheader("PIMS UML Domain Class Diagram")
-        uml_png_path = os.path.join(ASSETS_DIR, "pims_uml.png")
-        if os.path.exists(uml_png_path):
-            st.image(uml_png_path, caption="PIMS Domain Model UML Class Diagram", use_container_width=True)
+        st.caption("Domain object model representing entity attributes, data visibility, and associations.")
+
+        uml_filename = "pims_uml_dark.svg" if is_dark else "pims_uml.svg"
+        uml_svg_path = os.path.join(ASSETS_DIR, uml_filename)
+        if not os.path.exists(uml_svg_path):
+            uml_svg_path = os.path.join(ASSETS_DIR, "pims_uml.svg")
+
+        if os.path.exists(uml_svg_path):
+            with open(uml_svg_path, "r", encoding="utf-8") as f:
+                uml_svg_content = f.read()
+            st.markdown(
+                f'<div style="background-color: {bg_color}; padding: 20px; border-radius: 8px; border: 1px solid {border_color}; overflow-x: auto;">'
+                f'{uml_svg_content}'
+                f'</div>',
+                unsafe_allow_html=True
+            )
+            with open(uml_svg_path, "rb") as file:
+                st.download_button(
+                    label=f"⬇️ Download Full UML ({'Dark' if is_dark else 'Light'} SVG)",
+                    data=file,
+                    file_name=f"PIMS-UML-{'dark' if is_dark else 'light'}.svg",
+                    mime="image/svg+xml"
+                )
         else:
-            st.info("UML diagram image not found.")
+            uml_png_path = os.path.join(ASSETS_DIR, "pims_uml.png")
+            if os.path.exists(uml_png_path):
+                st.image(uml_png_path, caption="PIMS Domain Model UML Class Diagram", use_container_width=True)
+            else:
+                st.info("UML diagram asset not found.")
