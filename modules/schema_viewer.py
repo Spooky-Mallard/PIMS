@@ -1,5 +1,5 @@
 """Schema Viewer Module for PIMS
-Displays the ERD, UML Class Diagram, and complete 11-table Data Dictionary.
+Displays the ERD (Entity-Relationship Diagram) and complete 11-table Data Dictionary.
 """
 
 import os
@@ -124,7 +124,7 @@ def render_schema_viewer():
     bg_color = "#0f172a" if is_dark else "#ffffff"
     border_color = "#334155" if is_dark else "#e2e8f0"
 
-    tab_erd, tab_dict, tab_uml = st.tabs(["🖼️ Entity-Relationship Diagram (ERD)", "📖 Data Dictionary", "📐 UML Class Diagram"])
+    tab_erd, tab_dict = st.tabs(["🖼️ Entity-Relationship Diagram (ERD)", "📖 Data Dictionary"])
 
     with tab_erd:
         st.subheader("PIMS Entity-Relationship Diagram (Crow's Foot Notation)")
@@ -184,35 +184,3 @@ def render_schema_viewer():
             df = pd.DataFrame(rows)
             st.dataframe(df, use_container_width=True, hide_index=True)
             st.markdown(f"**Total Attributes:** `{len(df)}` | **Entity Type:** `{'Weak Entity' if selected_table in ['SaleItem', 'PurchaseOrderItem', 'DispensingRegister'] else 'Strong Entity'}`")
-
-    with tab_uml:
-        st.subheader("PIMS UML Domain Class Diagram")
-        st.caption("Domain object model representing entity attributes, data visibility, and associations.")
-
-        uml_filename = "pims_uml_dark.svg" if is_dark else "pims_uml.svg"
-        uml_svg_path = os.path.join(ASSETS_DIR, uml_filename)
-        if not os.path.exists(uml_svg_path):
-            uml_svg_path = os.path.join(ASSETS_DIR, "pims_uml.svg")
-
-        if os.path.exists(uml_svg_path):
-            with open(uml_svg_path, "r", encoding="utf-8") as f:
-                uml_svg_content = f.read()
-            st.markdown(
-                f'<div style="background-color: {bg_color}; padding: 20px; border-radius: 8px; border: 1px solid {border_color}; overflow-x: auto;">'
-                f'{uml_svg_content}'
-                f'</div>',
-                unsafe_allow_html=True
-            )
-            with open(uml_svg_path, "rb") as file:
-                st.download_button(
-                    label=f"⬇️ Download Full UML ({'Dark' if is_dark else 'Light'} SVG)",
-                    data=file,
-                    file_name=f"PIMS-UML-{'dark' if is_dark else 'light'}.svg",
-                    mime="image/svg+xml"
-                )
-        else:
-            uml_png_path = os.path.join(ASSETS_DIR, "pims_uml.png")
-            if os.path.exists(uml_png_path):
-                st.image(uml_png_path, caption="PIMS Domain Model UML Class Diagram", use_container_width=True)
-            else:
-                st.info("UML diagram asset not found.")
