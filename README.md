@@ -200,9 +200,91 @@ python backend/init_db.py
 
 ### Step 6: Launch the Streamlit Application
 ```bash
+# Standard Streamlit development server:
 streamlit run app.py
+
+# OR production server with custom Tornado health routes:
+python server.py
 ```
 Open your browser and navigate to: **`http://localhost:8501`**
+
+---
+
+## 🌐 Cloud Deployment (Render) & Health Keep-Alive API
+
+The application includes production server hooks and HTTP health endpoints specifically tailored for zero-downtime deployment on [Render](https://render.com) and continuous uptime monitoring.
+
+### 1. Render Web Service Configuration
+
+You can deploy the application on Render either manually or automatically using the included `render.yaml` Blueprint.
+
+#### Manual Dashboard Setup:
+1. Log in to [Render Dashboard](https://dashboard.render.com/) and click **New + > Web Service**.
+2. Connect your GitHub repository: `Spooky-Mallard/PIMS`.
+3. Configure the following service settings:
+   - **Name**: `sekarungi-pims`
+   - **Environment**: `Python 3`
+   - **Branch**: `main`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python server.py`
+   - **Health Check Path**: `/health` (or `/_stcore/health`)
+4. Add the required Environment Variable:
+   - `DATABASE_URL`: `postgresql://neondb_owner:YOUR_PASSWORD@ep-YOUR-PROJECT.us-east-2.aws.neon.tech/neondb?sslmode=require`
+
+#### Blueprint Setup (One-Click):
+Render will automatically detect the provided [render.yaml](file:///Users/spooky/Downloads/School/Database-Management-Systems/DBMS-PROJECT/render.yaml) blueprint file at the repository root and provision the service with optimized settings.
+
+---
+
+### 2. Available Health Check Endpoints
+
+The server exposes four health check paths on the single HTTP port assigned by Render (`$PORT`):
+
+| Endpoint | Method | Response Type | Description |
+| :--- | :--- | :--- | :--- |
+| **`/health`** | `GET` | `application/json` (HTTP 200/503) | **Primary Keep-Alive Endpoint.** Returns JSON system status and live Neon PostgreSQL connectivity check. |
+| **`/api/health`** | `GET` | `application/json` (HTTP 200/503) | API alias for automated monitoring suites and uptime pingers. |
+| **`/_stcore/health`** | `GET` | `text/html` (HTTP 200 `ok`) | Built-in Streamlit readiness probe used by cloud orchestrators. |
+| **`/healthz`** | `GET` | `text/html` (HTTP 200 `ok`) | Kubernetes-standard health probe. |
+
+#### Sample Response (`GET /health` or `GET /api/health`):
+```json
+{
+  "status": "healthy",
+  "service": "Sekarungi PIMS",
+  "database": {
+    "connected": true,
+    "engine": "neondb",
+    "host": "neon.tech"
+  }
+}
+```
+
+---
+
+### 3. Preventing Render Free-Tier Spin-Down (24/7 Keep-Alive)
+
+Render free-tier web services automatically spin down into "sleep mode" after **15 minutes** of HTTP inactivity. When a subsequent user visits, the application suffers a 30–60 second cold start.
+
+To keep the application continuously warm and instantly responsive 24/7, configure an external automated pinger to send an HTTP `GET` request to your `/health` endpoint every **10 minutes**:
+
+#### Option A: Free Uptime Monitoring Services (Recommended)
+1. **[UptimeRobot](https://uptimerobot.com)** (Free):
+   - Add New Monitor -> Type: `HTTP(s)`
+   - Friendly Name: `Sekarungi PIMS Health`
+   - URL: `https://your-service-name.onrender.com/health`
+   - Monitoring Interval: `Every 5 minutes` or `Every 10 minutes`
+2. **[Cron-job.org](https://cron-job.org)** (Free):
+   - Create a cron job pointing to `https://your-service-name.onrender.com/health` scheduled every 10 minutes.
+3. **[Better Stack / Better Uptime](https://betterstack.com)** (Free tier available).
+
+#### Option B: GitHub Actions Scheduled Cron Workflow
+An example GitHub Actions workflow is provided at [`.github/workflows/keep_alive.yml.example`](file:///Users/spooky/Downloads/School/Database-Management-Systems/DBMS-PROJECT/.github/workflows/keep_alive.yml.example).
+To activate it:
+```bash
+cp .github/workflows/keep_alive.yml.example .github/workflows/keep_alive.yml
+```
+Update the `APP_URL` variable with your live Render URL, commit, and push. GitHub will automatically ping the `/health` endpoint every 10 minutes.
 
 ---
 

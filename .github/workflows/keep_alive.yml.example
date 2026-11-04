@@ -1,0 +1,24 @@
+name: Keep Alive Render Web Service
+
+on:
+  schedule:
+    # Ping every 10 minutes to prevent Render free instance spin-down
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Sekarungi PIMS Health Endpoint
+        run: |
+          # Replace with your actual Render deployment URL
+          APP_URL="https://sekarungi-pims.onrender.com/health"
+          echo "Pinging $APP_URL..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL")
+          echo "Received HTTP status code: $STATUS"
+          if [ "$STATUS" -eq 200 ]; then
+            echo "Render service is awake and healthy!"
+          else
+            echo "Service ping completed with status: $STATUS"
+          fi
