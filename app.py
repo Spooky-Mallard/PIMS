@@ -61,45 +61,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Core Dashboard & Database Utilities
+# Import sub-modules
 from modules.dashboard import render_dashboard
+from modules.schema_viewer import render_schema_viewer
+from modules.tables_browser import render_tables_browser
+from modules.forms import render_forms
+from modules.queries_runner import render_queries_runner
+from modules.reports import render_reports
 from backend.db import test_connection
-
-# Graceful modular imports for teammate deliverables
-try:
-    from modules.schema_viewer import render_schema_viewer
-except ImportError:
-    def render_schema_viewer():
-        st.subheader("📑 ERD & Data Dictionary")
-        st.info("Module under active implementation by **Karen Nakibuuka** (@Kar3n-N) under ticket **PIMS-23 / Issue #27**.")
-
-try:
-    from modules.tables_browser import render_tables_browser
-except ImportError:
-    def render_tables_browser():
-        st.subheader("🗃️ Live Database Tables Browser")
-        st.info("Module under active implementation by **Karen Nakibuuka** (@Kar3n-N) under ticket **PIMS-23 / Issue #27**.")
-
-try:
-    from modules.forms import render_forms
-except ImportError:
-    def render_forms():
-        st.subheader("📝 Data Entry & Point of Sale (POS) Forms")
-        st.info("Module under active implementation by **Sabano Zubedah** (@Angel-coder-max) under ticket **PIMS-21 / Issue #26**.")
-
-try:
-    from modules.queries_runner import render_queries_runner
-except ImportError:
-    def render_queries_runner():
-        st.subheader("🔍 SQL Query Explorer")
-        st.info("Module under active implementation by **Reagan Ankunda** (@reaganankunda4-alt) under ticket **PIMS-25 / Issue #28**.")
-
-try:
-    from modules.reports import render_reports
-except ImportError:
-    def render_reports():
-        st.subheader("📊 Graphical Reports & Analytics")
-        st.info("Module under active implementation by **Reagan Ankunda** (@reaganankunda4-alt) under ticket **PIMS-25 / Issue #28**.")
 
 
 def main():
