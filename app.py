@@ -69,10 +69,12 @@ from modules.forms import render_forms
 from modules.queries_runner import render_queries_runner
 from modules.reports import render_reports
 from backend.db import test_connection
-from backend.health import setup_health_routes
-
-# Ensure custom health endpoints (/health, /api/health) are attached to Tornado
-setup_health_routes()
+# Attach health API routes if running in production server
+try:
+    from backend.health import setup_health_routes
+    setup_health_routes()
+except Exception:
+    pass
 
 
 def main():

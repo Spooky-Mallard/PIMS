@@ -12,10 +12,12 @@ Ideal for Render web services and external uptime pingers (UptimeRobot, Better S
 import os
 import sys
 from streamlit.web.cli import main
-from backend.health import patch_tornado_health
-
 # Patch Streamlit's Tornado server with health endpoints before server startup
-patch_tornado_health()
+try:
+    from backend.health import patch_tornado_health
+    patch_tornado_health()
+except Exception as e:
+    pass
 
 
 if __name__ == "__main__":
