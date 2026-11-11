@@ -3,6 +3,7 @@ Sekarungi Pharmaceuticals Ltd
 Makerere University - BCS 2206 Database Management Systems
 """
 
+import os
 import streamlit as st
 
 # Must be the very first Streamlit command
