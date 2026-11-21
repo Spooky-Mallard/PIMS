@@ -210,11 +210,32 @@ Open your browser and navigate to: **`http://localhost:8501`**
 
 ---
 
-## 🌐 Cloud Deployment (Render) & Health Keep-Alive API
+## 🌐 Cloud Deployment Options
 
-The application includes production server hooks and HTTP health endpoints specifically tailored for zero-downtime deployment on [Render](https://render.com) and continuous uptime monitoring.
+### 1. Streamlit Community Cloud (Recommended — 100% Free & 24/7 Permanent)
 
-### 1. Render Web Service Configuration
+[Streamlit Community Cloud](https://share.streamlit.io/) is the official, native hosting platform built directly by Snowflake/Streamlit. Unlike Render, **it never runs out of free tier hours**, does not suffer from monthly compute quotas, and natively supports continuous WebSocket connections without crashing.
+
+#### 1-Click Deployment Steps:
+1. Log in to [share.streamlit.io](https://share.streamlit.io/) using your GitHub account (`Spooky-Mallard`).
+2. Click **Create app** (or **New app**).
+3. Fill in the deployment form:
+   - **Repository**: `Spooky-Mallard/PIMS`
+   - **Branch**: `main`
+   - **Main file path**: `app.py`
+   - **App URL**: `sekarungi-pims.streamlit.app` (or any custom handle)
+4. Click **Advanced settings...** -> **Secrets**, and paste your database credentials:
+   ```toml
+   DATABASE_URL = "postgresql://neondb_owner:YOUR_PASSWORD@ep-YOUR-PROJECT.us-east-2.aws.neon.tech/neondb?sslmode=require"
+   ```
+5. Click **Deploy!**
+Your site is live within 60 seconds with an SSL-secured `.streamlit.app` URL that remains accessible 24/7 for exam marking.
+
+---
+
+### 2. Render Web Service & Health Keep-Alive API (Alternative)
+
+The application also includes production server hooks and HTTP health endpoints specifically tailored for deployment on [Render](https://render.com). Note that Render free-tier accounts provide 750 free instance hours per month across all services.
 
 You can deploy the application on Render either manually or automatically using the included `render.yaml` Blueprint.
 

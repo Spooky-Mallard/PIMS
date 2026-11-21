@@ -19,14 +19,44 @@ project_root = os.path.dirname(current_dir)
 env_path = os.path.join(project_root, ".env")
 load_dotenv(env_path)
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def get_database_url():
+    """Retrieve DATABASE_URL from environment variables or Streamlit Cloud secrets."""
+    # 1. Check os.environ
+    url = os.environ.get("DATABASE_URL")
+    if url:
+        return url
+
+    # 2. Check Streamlit Cloud secrets (st.secrets)
+    try:
+        import streamlit as st
+        if hasattr(st, "secrets") and "DATABASE_URL" in st.secrets:
+            return st.secrets["DATABASE_URL"]
+    except Exception:
+        pass
+
+    return None
 
 
-def get_db_connection():
-    """Create and return a raw psycopg2 connection."""
-    if not DATABASE_URL:
-        raise ValueError("DATABASE_URL not found in environment variables. Check .env file.")
-    return psycopg2.connect(DATABASE_URL)
+DATABASE_URL = get_database_url()
+
+
+def get_db_connection(retries=2, delay=1.5):
+    """Create and return a raw psycopg2 connection with automatic retry for serverless cold starts."""
+    db_url = get_database_url()
+    if not db_url:
+        raise ValueError("DATABASE_URL not found in environment variables or Streamlit secrets. Check .env or st.secrets.")
+
+    last_err = None
+    for attempt in range(retries):
+        try:
+            return psycopg2.connect(db_url)
+        except (psycopg2.OperationalError, psycopg2.DatabaseError) as e:
+            last_err = e
+            if attempt < retries - 1:
+                import time
+                time.sleep(delay)
+    raise last_err
 
 
 def test_connection():
