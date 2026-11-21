@@ -24,18 +24,20 @@ def get_database_url():
     """Retrieve DATABASE_URL from environment variables or Streamlit Cloud secrets."""
     # 1. Check os.environ
     url = os.environ.get("DATABASE_URL")
-    if url:
-        return url
+    if not url:
+        # 2. Check Streamlit Cloud secrets (st.secrets)
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and "DATABASE_URL" in st.secrets:
+                url = st.secrets["DATABASE_URL"]
+        except Exception:
+            pass
 
-    # 2. Check Streamlit Cloud secrets (st.secrets)
-    try:
-        import streamlit as st
-        if hasattr(st, "secrets") and "DATABASE_URL" in st.secrets:
-            return st.secrets["DATABASE_URL"]
-    except Exception:
-        pass
+    if url and "channel_binding=" in url:
+        # Avoid libpq / SCRAM channel_binding plugin stalls on macOS/Linux serverless
+        url = url.replace("&channel_binding=require", "").replace("?channel_binding=require&", "?").replace("?channel_binding=require", "")
 
-    return None
+    return url
 
 
 DATABASE_URL = get_database_url()
@@ -50,7 +52,7 @@ def get_db_connection(retries=2, delay=1.5):
     last_err = None
     for attempt in range(retries):
         try:
-            return psycopg2.connect(db_url)
+            return psycopg2.connect(db_url, connect_timeout=10)
         except (psycopg2.OperationalError, psycopg2.DatabaseError) as e:
             last_err = e
             if attempt < retries - 1:
