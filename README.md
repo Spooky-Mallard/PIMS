@@ -212,29 +212,7 @@ Open your browser and navigate to: **`http://localhost:8501`**
 
 ## 🌐 Cloud Deployment Options
 
-### 1. Vercel Serverless (Recommended — 24/7 Free & Permanent)
-
-[Vercel](https://vercel.com/) runs PIMS as a serverless application using AWS Lambda via `@vercel/python`. Configured with `vercel.json` and `api/index.py`, it serves a fast, responsive single-page web interface with live Neon PostgreSQL queries, interactive table browser, query runner, financial charts, and data entry forms.
-
-**Why Vercel?**
-- **Zero compute hour exhaustion**: Unlike Render's 750 free-hour monthly cap, Vercel serverless has no idle compute timer and never runs out of hours.
-- **Fast cold-starts**: Ready 24/7 whenever the lecturer opens the link.
-- **Zero ORM**: Strictly executes raw SQL queries over Neon PostgreSQL via `psycopg2`.
-
-#### 1-Click Deployment Steps on Vercel:
-1. Log in to [vercel.com](https://vercel.com/) and click **"Add New..."** -> **"Project"**.
-2. Import your repository: `Spooky-Mallard/PIMS`.
-3. Configure the project:
-   - **Framework Preset**: Leave as **Other** (Vercel automatically detects `vercel.json`).
-   - **Root Directory**: `./` (or leave default).
-4. Under **Environment Variables**, add:
-   - Key: `DATABASE_URL`
-   - Value: `postgresql://neondb_owner:npg_FpohJ4eByKi5@ep-twilight-mountain-b51imxlx-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require`
-5. Click **"Deploy"**. Your live production site will be ready at a `*.vercel.app` URL.
-
----
-
-### 2. Streamlit Community Cloud (Alternative Python Host)
+### 1. Streamlit Community Cloud (Recommended — 100% Free & 24/7 Permanent)
 
 [Streamlit Community Cloud](https://share.streamlit.io/) is the official, native hosting platform built directly by Snowflake/Streamlit. Unlike Render, **it never runs out of free tier hours**, does not suffer from monthly compute quotas, and natively supports continuous WebSocket connections without crashing.
 
